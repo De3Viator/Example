@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.team.example">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Example">
+        <activity android:name=".activity.posts.AddPostActivity"></activity>
+        <activity android:name=".activity.chat.ChatActivity" />
+        <activity android:name=".activity.users.UsersActivity" />
+        <activity android:name=".activity.home.UpdateProfileActivity" />
+        <activity android:name=".activity.access.RecoverActivity" />
+        <activity android:name=".activity.home.ProfileActivity" />
+        <activity android:name=".activity.access.RegActivity" />
+        <activity android:name=".activity.access.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
