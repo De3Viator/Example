@@ -14,39 +14,45 @@
         android:id="@+id/btnShare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="412dp"
-        android:layout_marginEnd="16dp"
         android:text="Share"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.657" />
 
     <Button
-        android:id="@+id/btnComment"
+        android:id="@+id/btnDetailComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="412dp"
-        android:layout_marginEnd="148dp"
         android:text="Comment"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.46"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.657" />
 
     <Button
         android:id="@+id/btnLike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="268dp"
         android:text="Like"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.657" />
 
     <TextView
         android:id="@+id/txtLike"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="316dp"
-        android:text="1.2k Like"
+        android:layout_width="171dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="224dp"
+        android:layout_marginBottom="176dp"
+        android:text="0 Like"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -54,7 +60,7 @@
         android:id="@+id/ivShowPost"
         android:layout_width="0dp"
         android:layout_height="277dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="156dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,12 +69,13 @@
 
     <TextView
         android:id="@+id/txtpDescription"
-        android:layout_width="405dp"
-        android:layout_height="21dp"
-        android:layout_marginTop="96dp"
+        android:layout_width="204dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="132dp"
         android:autoLink="all"
         android:text="Description"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.347"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -76,8 +83,8 @@
         android:id="@+id/txtTime"
         android:layout_width="56dp"
         android:layout_height="20dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="300dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="284dp"
         android:text="33 min"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -86,21 +93,21 @@
         android:id="@+id/txtpuName"
         android:layout_width="76dp"
         android:layout_height="20dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="280dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="264dp"
         android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtpTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:text="Title"
+        android:layout_width="197dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="104dp"
         android:autoLink="all"
+        android:text="Title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.358"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,7 +116,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/ic_deafult_img"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -118,7 +125,7 @@
         android:id="@+id/imbgtnMore"
         android:layout_width="38dp"
         android:layout_height="13dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="4dp"
         android:background="@null"
         android:src="@drawable/ic_more_img_white"

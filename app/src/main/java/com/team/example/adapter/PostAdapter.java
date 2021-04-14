@@ -1,6 +1,5 @@
 package com.team.example.adapter;
 
-import android.content.Context;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,99 +8,52 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
 import com.squareup.picasso.Picasso;
 import com.team.example.R;
 import com.team.example.model.PostModel;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class PostAdapter extends RecyclerView.Adapter {
-    private Context context;
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     private List<PostModel> postList;
-    private PostHolder postHolder;
+    private OnPostClickListener<PostModel> listener;
+    private DatabaseReference likeRef;
+    private DatabaseReference postRef;
+    boolean processLike = false;
+    private PostHolder holder;
+    public static String MORE = "MORE";
+    public static String LIKE = "LIKE";
+    public static String COMMENT = "COMMENT";
+    public static String SHARE = "SHARE";
+    String uid;
 
-    public PostAdapter(Context context,List<PostModel>postList){
-        this.context = context;
+    public PostAdapter(List<PostModel> postList, OnPostClickListener<PostModel> listener) {
         this.postList = postList;
+        this.listener = listener;
+        notifyDataSetChanged();
     }
 
     public PostAdapter() {
     }
 
-
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.row_posts, parent,false);
+    public PostAdapter.PostHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_posts, parent, false);
         return new PostHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        String uid = postList.get(position).getuId();
-        String puName = postList.get(position).getPuName();
-        String puTitle= postList.get(position).getPostTitle();
-        String puDescription = postList.get(position).getPostDescription();
-        String pImage = postList.get(position).getPostImage();
-        String pTimeStape = postList.get(position).getpTimeStape();
-        String puPicture = postList.get(position).getPuPicture();
-
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-       // calendar.setTimeInMillis(Long.parseLong(pTimeStape));
-        String pTime = DateFormat.format("dd/mm/yyyy hh:mm:aa",calendar).toString();
-
-        postHolder.txtpDescription.setText(puDescription);
-        postHolder.txtpTitle.setText(puTitle);
-        postHolder.txtpuName.setText(puName);
-        postHolder.txtpTime.setText(pTime);
-
-        postHolder.imgbtnMore.setOnClickListener(v->{
-            Toast.makeText(context,"More",Toast.LENGTH_SHORT).show();
-
-        });
-
-        postHolder.btnLike.setOnClickListener(v->{
-            Toast.makeText(context,"like",Toast.LENGTH_SHORT).show();
-
-        });
-
-        postHolder.btnShare.setOnClickListener(v->{
-            Toast.makeText(context,"Share",Toast.LENGTH_SHORT).show();
-
-        });
-
-        postHolder.btnComment.setOnClickListener(v->{
-            Toast.makeText(context,"Comment",Toast.LENGTH_SHORT).show();
-
-        });
-
-
-        try{
-            Picasso.get().load(puPicture).placeholder(R.drawable.ic_deafult_img).into(postHolder.ivPictureUser);
-        } catch( Exception e){
-            
-        }
-
-        if(pImage.equals("NoImage")){
-            postHolder.ivShowPost.setVisibility(View.GONE);
-
-        }
-
-       else {
-            try {
-                Picasso.get().load(pImage).into(postHolder.ivShowPost);
-            } catch (Exception e) {
-
-            }
-        }
-
+    public void onBindViewHolder(@NonNull PostAdapter.PostHolder holder, int position) {
+        holder.onBind(postList.get(position), listener);
     }
 
     @Override
@@ -109,12 +61,17 @@ public class PostAdapter extends RecyclerView.Adapter {
         return postList.size();
     }
 
+    public interface OnPostClickListener<T> {
+        void onClick(String event, T model);
+    }
+
 
     class PostHolder extends RecyclerView.ViewHolder {
-        private ImageView ivPictureUser,ivShowPost;
-        private TextView txtpuName,txtpTime,txtpTitle,txtpDescription,txtpLikes;
+        private ImageView ivPictureUser, ivShowPost;
+        private TextView txtpuName, txtpTime, txtpTitle, txtpDescription, txtpLikes;
         private ImageButton imgbtnMore;
         private Button btnLike, btnShare, btnComment;
+
         public PostHolder(@NonNull View itemView) {
 
             super(itemView);
@@ -124,10 +81,59 @@ public class PostAdapter extends RecyclerView.Adapter {
             txtpTime = itemView.findViewById(R.id.txtTime);
             txtpTitle = itemView.findViewById(R.id.txtpTitle);
             txtpDescription = itemView.findViewById(R.id.txtpDescription);
-            imgbtnMore =itemView.findViewById(R.id.imbgtnMore);
+            txtpLikes = itemView.findViewById(R.id.txtLike);
+            imgbtnMore = itemView.findViewById(R.id.imbgtnMore);
             btnLike = itemView.findViewById(R.id.btnLike);
-            btnShare= itemView.findViewById(R.id.btnShare);
-            btnComment = itemView.findViewById(R.id.btnComment);
+            btnShare = itemView.findViewById(R.id.btnShare);
+            btnComment = itemView.findViewById(R.id.btnDetailComment);
+        }
+
+        public void onBind(PostModel model, OnPostClickListener listener) {
+            String uid = model.getuId();
+            String puName = model.getPuName();
+            String puTitle = model.getPostTitle();
+            String puDescription = model.getPostDescription();
+            String pImage = model.getPostImage();
+            String pTimeStape = model.getpTimeStape();
+            String puPicture = model.getPuPicture();
+            ArrayList<String> pLikes = model.getpLikes();
+            String postId = model.getPostId();
+
+            Calendar calendar = Calendar.getInstance(Locale.getDefault());
+            String pTime = DateFormat.format("dd/MM/yyyy hh:mm:aa", calendar).toString();
+            //calendar.setTimeInMillis(Long.parseLong(pTimeStape));
+
+            txtpDescription.setText(puDescription);
+            txtpTitle.setText(puTitle);
+            txtpuName.setText(puName);
+            txtpTime.setText(pTime);
+            txtpLikes.setText(pLikes.size() + "Likes");
+
+            imgbtnMore.setOnClickListener(v -> listener.onClick(MORE, model));
+
+            btnLike.setOnClickListener(v -> listener.onClick(LIKE, model));
+
+            btnShare.setOnClickListener(v -> listener.onClick(SHARE, model));
+
+            btnComment.setOnClickListener(v -> listener.onClick(COMMENT, model));
+
+
+            try {
+                Picasso.get().load(puPicture).placeholder(R.drawable.ic_deafult_img).into(ivPictureUser);
+            } catch (Exception e) {
+
+            }
+
+            if (pImage.equals("NoImage")) {
+                ivShowPost.setVisibility(View.GONE);
+
+            } else {
+                try {
+                    Picasso.get().load(pImage).into(ivShowPost);
+                } catch (Exception e) {
+
+                }
+            }
 
         }
     }

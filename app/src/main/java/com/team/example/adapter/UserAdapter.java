@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 import com.team.example.R;
-import com.team.example.activity.chat.ChatActivity;
 import com.team.example.activity.users.UsersActivity;
 import com.team.example.model.UserModel;
 
@@ -50,12 +49,6 @@ public class UserAdapter extends RecyclerView.Adapter {
         } catch (Exception e){
 
         }
-
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("hisUid",hisUID);
-            context.startActivity(intent);
-        });
 
     }
 

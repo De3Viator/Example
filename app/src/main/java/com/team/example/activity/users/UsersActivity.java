@@ -21,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.auth.User;
 import com.team.example.R;
-import com.team.example.activity.chat.ChatActivity;
 import com.team.example.adapter.UserAdapter;
 import com.team.example.model.UserModel;
 
@@ -34,7 +33,7 @@ public class UsersActivity extends AppCompatActivity {
     private List<UserModel> userModelList;
     private ImageView ivAvatar;
 
-    public UsersActivity(){
+    public UsersActivity() {
 
     }
 
@@ -54,16 +53,14 @@ public class UsersActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userModelList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     UserModel userModel = ds.getValue(UserModel.class);
 
-                    if(userModel.getUid().equals(user.getUid())){
-                        userModelList.add(userModel);
-                    }
 
-                    userAdapter = new UserAdapter(getBaseContext(),userModelList);
-                    rvUsers.setAdapter(userAdapter);
+                    userModelList.add(userModel);
                 }
+                userAdapter = new UserAdapter(getBaseContext(), userModelList);
+                rvUsers.setAdapter(userAdapter);
             }
 
             @Override

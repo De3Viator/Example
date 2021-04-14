@@ -1,37 +1,23 @@
 package com.team.example.model;
 
+import java.util.ArrayList;
+
 public class PostModel {
-    String postId;
-    String postTitle;
-    String postDescription;
-    String postImage;
-    String postTime;
-    String uId;
-    String puName;
-    String pTimeStape;
-    String puPicture;
+    private String postId, postTitle, postDescription, postImage, postTime,  uId, puName, pTimeStape, puPicture,pComment;
+    private ArrayList <String> pLikes = new ArrayList<>();
+    private ArrayList<String> comments = new ArrayList<>();
+    private boolean isLiked;
 
-    public String getPuPicture() {
-        return puPicture;
-    }
 
-    public void setPuPicture(String puPicture) {
-        this.puPicture = puPicture;
-    }
 
     public PostModel(){
 
     }
 
-    public String getpTimeStape() {
-        return pTimeStape;
-    }
 
-    public void setpTimeStape(String pTimeStape) {
-        this.pTimeStape = pTimeStape;
-    }
 
-    public PostModel(String postId, String postTitle, String postDescription, String postImage, String postTime, String uId, String puName, String pTimeStape, String puPicture) {
+
+    public PostModel(String postId, String postTitle, String postDescription, String postImage, String postTime, String uId, String puName, String pTimeStape, String puPicture, ArrayList <String> pLikes, String pComment, ArrayList<String> comments) {
         this.postId = postId;
         this.postTitle = postTitle;
         this.postDescription = postDescription;
@@ -41,7 +27,43 @@ public class PostModel {
         this.puName = puName;
         this.pTimeStape = pTimeStape;
         this.puPicture = puPicture;
+        this.pLikes = pLikes;
+        this.pComment = pComment;
+        this.comments = comments;
     }
+
+    public ArrayList<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<String> comments) {
+        this.comments = comments;
+    }
+
+    public String getpComment() {
+        return pComment;
+    }
+
+    public void setpComment(String pComment) {
+        this.pComment = pComment;
+    }
+
+    public ArrayList<String> getpLikes() {
+        return pLikes;
+    }
+
+    public void setpLikes(ArrayList<String> pLikes) {
+        this.pLikes = pLikes;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
 
     public String getPostId() {
         return postId;
@@ -98,4 +120,23 @@ public class PostModel {
     public void setPuName(String puName) {
         this.puName = puName;
     }
+
+    public String getpTimeStape() {
+        return pTimeStape;
+    }
+
+    public void setpTimeStape(String pTimeStape) {
+        this.pTimeStape = pTimeStape;
+    }
+
+    public String getPuPicture() {
+        return puPicture;
+    }
+
+    public void setPuPicture(String puPicture) {
+        this.puPicture = puPicture;
+    }
+
+
+
 }

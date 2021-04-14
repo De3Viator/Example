@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +21,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.team.example.DBHelper;
 import com.team.example.R;
-import com.team.example.activity.chat.ChatActivity;
 import com.team.example.activity.posts.AddPostActivity;
+import com.team.example.activity.posts.PostDetailActivity;
 import com.team.example.activity.users.UsersActivity;
 import com.team.example.activity.access.MainActivity;
 import com.team.example.adapter.PostAdapter;
@@ -39,13 +39,15 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseDatabase db;
     private DatabaseReference dbRef;
     private RecyclerView rvPost;
-    private List<PostModel>postList;
+    private List<PostModel> postList;
     private PostAdapter postAdapter;
     private ImageView ivAvatar, ivCover;
     private TextView txtUsername, txtCountry, txtAge;
-    private Button btnUpdProfile, btnUsers,btnChatUserChat,btnAddPost;
+    private Button btnUpdProfile, btnUsers, btnChatUserChat, btnAddPost;
+    private DatabaseReference likeRef = DBHelper.getInstance().getChildReference("likeRef");
+    private DatabaseReference postRef = DBHelper.getInstance().getChildReference("Posts");
 
-    public ProfileActivity(){
+    public ProfileActivity() {
 
     }
 
@@ -77,21 +79,16 @@ public class ProfileActivity extends AppCompatActivity {
         postList = new ArrayList<>();
         loadPost();
 
-
-
-        btnAddPost.setOnClickListener(v-> startActivity(new Intent(ProfileActivity.this, AddPostActivity.class)));
+        btnAddPost.setOnClickListener(v -> startActivity(new Intent(ProfileActivity.this, AddPostActivity.class)));
 
 
         btnUpdProfile.setOnClickListener(v -> startActivity(new Intent(ProfileActivity.this, UpdateProfileActivity.class)));
 
-        btnUsers.setOnClickListener(v->{
-            startActivity(new Intent(ProfileActivity.this, UsersActivity.class));
+        btnUsers.setOnClickListener(v -> {
+            startActivity(new Intent(ProfileActivity.this, PostDetailActivity.class));
 
         });
 
-        btnChatUserChat.setOnClickListener(v->{
-            startActivity(new Intent(ProfileActivity.this, ChatActivity.class));
-        });
 
         Query query = dbRef.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
@@ -101,7 +98,6 @@ public class ProfileActivity extends AppCompatActivity {
                     String username = "" + ds.child("username").getValue();
                     String country = "" + ds.child("country").getValue();
                     String image = "" + ds.child("image").getValue();
-                    String cover = "" + ds.child("image").getValue();
                     String age = "" + ds.child("age").getValue();
 
                     txtUsername.setText(username);
@@ -136,16 +132,28 @@ public class ProfileActivity extends AppCompatActivity {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Posts");
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot){
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 postList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()){
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     PostModel postModel = ds.getValue(PostModel.class);
                     postList.add(postModel);
-
-                    postAdapter = new PostAdapter(getBaseContext(),postList);// can be error
-
-                    rvPost.setAdapter(postAdapter);
                 }
+                postAdapter = new PostAdapter(postList, (event, model) -> {
+                    if (event.equals(PostAdapter.LIKE)) {
+                        PostModel tmpModel = model;
+                        ArrayList<String> pValueLikes = tmpModel.getpLikes();
+                        String postIde = model.getPostId();
+                        String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        if (isLiked(id, tmpModel.getpLikes())) {
+                            pValueLikes.remove(id);
+                        } else {
+                            pValueLikes.add(id);
+                        }
+                        postRef.child(postIde).child("likeRef").setValue(pValueLikes);
+                    }
+                    Toast.makeText(getBaseContext(), event, Toast.LENGTH_SHORT).show();
+                });
+                rvPost.setAdapter(postAdapter);
             }
 
             @Override
@@ -153,6 +161,15 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+
+    }
+
+    private boolean isLiked(String id, ArrayList<String> likeRef) {
+        for (String likeId : likeRef) {
+            if (likeId.equals(id)) return true;
+        }
+        return false;
 
     }
 }
