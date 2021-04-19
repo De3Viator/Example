@@ -65,7 +65,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
 
         public void onBindComment(PostModel model, OnItemTypeClickListener listener){
             String commentUsername = model.getPuName();
-            ArrayList <String> commentDescription = model.getpCommentList();
+            ArrayList <String> commentDescription = model.getComments();
 
             txtCommentDescription.setText(commentDescription.get(commentDescription.size()-1));
             txtCommentUsername.setText(commentUsername);

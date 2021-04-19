@@ -121,19 +121,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             try {
                 Picasso.get().load(puPicture).placeholder(R.drawable.ic_deafult_img).into(ivPictureUser);
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
-            if (pImage.equals("NoImage")) {
-                ivShowPost.setVisibility(View.GONE);
+            if (pImage != null) {
+                if (pImage.equals("NoImage")) {
+                    ivShowPost.setVisibility(View.GONE);
 
-            } else {
-                try {
-                    Picasso.get().load(pImage).into(ivShowPost);
-                } catch (Exception e) {
-
+                } else {
+                    try {
+                        Picasso.get().load(pImage).into(ivShowPost);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
 
         }
     }
