@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,17 +19,23 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.UploadTask;
 import com.team.example.R;
 import com.team.example.activity.home.ProfileActivity;
+import com.team.example.data.FirebaseHelper;
+import com.team.example.model.UserModel;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 public class RegActivity extends AppCompatActivity {
     private Button btnRegReg;
     private EditText etRegCountry, etRegAge, etRegEmail, etRegPassword, etRegUsername;
-    private FirebaseAuth mAuth;
+
     private Button btnAddImage;
     private ImageView ivRegAvatar;
+    private Bitmap avatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +60,6 @@ public class RegActivity extends AppCompatActivity {
             String age = etRegAge.getText().toString();
             String country = etRegCountry.getText().toString();
             String username = etRegUsername.getText().toString();
-            mAuth = FirebaseAuth.getInstance();
 
 
             if (email.isEmpty()) {
@@ -71,27 +77,9 @@ public class RegActivity extends AppCompatActivity {
                 return;
             }
 
-            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    String uid = mAuth.getCurrentUser().getUid();
-                    HashMap<Object, String> userInfo = new HashMap<>();
-                    userInfo.put("email", email);
-                    userInfo.put("password", password);
-                    userInfo.put("age", age);
-                    userInfo.put("country", country);
-                    userInfo.put("image", "");
-                    userInfo.put("cover", "");
-                    userInfo.put("username", username);
-                    userInfo.put("uid",uid);
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference reference = database.getReference("Users");
-                    reference.child(uid).setValue(userInfo);
-                    Toast.makeText(RegActivity.this, "Account was created", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(RegActivity.this, ProfileActivity.class));
-                } else {
-                    Toast.makeText(RegActivity.this, "Account was not created", Toast.LENGTH_SHORT).show();
-                }
-            });
+            UserModel userModel = new UserModel(username,email,password,age,country);
+
+            FirebaseHelper.getInstance().createUser(avatar,userModel,this);
         });
 
     }
@@ -100,7 +88,17 @@ public class RegActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 1) {
-            ivRegAvatar.setImageBitmap(getPicture(data.getData()));
+
+            try {
+                final Uri imageUri = data.getData();
+                final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                avatar = BitmapFactory.decodeStream(imageStream);
+
+                ivRegAvatar.setImageBitmap(avatar);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -108,16 +106,6 @@ public class RegActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, 1);
-    }
-
-    private Bitmap getPicture(Uri selectedImage) {
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-        return BitmapFactory.decodeFile(picturePath);
     }
 
 }

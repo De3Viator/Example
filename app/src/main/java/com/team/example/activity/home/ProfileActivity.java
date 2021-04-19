@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.team.example.activity.posts.PostDetailActivity;
 import com.team.example.activity.users.UsersActivity;
 import com.team.example.activity.access.MainActivity;
 import com.team.example.adapter.PostAdapter;
+import com.team.example.data.FirebaseHelper;
 import com.team.example.model.PostModel;
 
 import java.util.ArrayList;
@@ -104,12 +106,13 @@ public class ProfileActivity extends AppCompatActivity {
                     txtCountry.setText(country);
                     txtAge.setText(age);
 
-                    try {
-                        Picasso.get().load(image).into(ivAvatar);
+                   if (image != null)FirebaseHelper.getInstance()
+                            .getReference(image)
+                            .getDownloadUrl()
+                            .addOnSuccessListener(uri ->
+                                    Picasso.get().load(uri).placeholder(R.drawable.ic_deafult_img).into(ivAvatar))
+                            .addOnFailureListener(e -> Log.e("Firebase storage:",e.getLocalizedMessage()));
 
-                    } catch (Exception e) {
-                        Picasso.get().load(R.drawable.ic_deafult_img).into(ivAvatar);
-                    }
                 }
 
             }

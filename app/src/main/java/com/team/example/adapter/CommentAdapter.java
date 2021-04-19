@@ -19,7 +19,7 @@ import java.util.List;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentHolder>  {
     private DatabaseReference comRef;
-    private List<PostModel> commentList;
+    private List<PostModel> commentList = new ArrayList();
     private OnItemTypeClickListener listener;
 
     public CommentAdapter ( OnItemTypeClickListener listener){
@@ -67,7 +67,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentH
             String commentUsername = model.getPuName();
             ArrayList <String> commentDescription = model.getComments();
 
-            txtCommentDescription.setText(commentDescription.get(commentDescription.size()-1));
+
+           if (commentDescription.size()>=1)txtCommentDescription.setText(commentDescription.get(commentDescription.size()-1));
             txtCommentUsername.setText(commentUsername);
             itemView.setOnClickListener(v-> {
                 listener.onItemClick("comment", model);

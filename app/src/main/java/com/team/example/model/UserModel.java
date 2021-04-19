@@ -3,6 +3,14 @@ package com.team.example.model;
 public class UserModel {
     String username,email,password,uid,image,search,age,country;
 
+    public UserModel(String username, String email, String password, String age, String country) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.country = country;
+    }
+
     public String getUsername() {
         return username;
     }
